@@ -26,17 +26,24 @@ class ImportTransactionsService {
     }
 
     const converter = await csvToJson().fromFile(filePath);
+    const extractedCategories = converter.reduce((final, current) => {
+      if (!final.includes(current.category)) {
+        final.push(current.category);
+      }
+
+      return final;
+    }, []);
 
     const categories: Category[] = await Promise.all(
-      converter.map(
-        async (transaction): Promise<Category> => {
+      extractedCategories.map(
+        async (categoryTitle: string): Promise<Category> => {
           const category = await categoriesRepository.findOne({
-            where: { title: transaction.category },
+            where: { title: categoryTitle },
           });
 
           if (!category) {
             const newCategory = categoriesRepository.create({
-              title: transaction.category,
+              title: categoryTitle,
             });
 
             await categoriesRepository.save(newCategory);
