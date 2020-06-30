@@ -12,7 +12,8 @@ export default class CreateCategoriesTable1593455929648
             type: 'uuid',
             isPrimary: true,
             generationStrategy: 'uuid',
-            default: 'gen_random_uuid()',
+            // default: 'gen_random_uuid()',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'title',
